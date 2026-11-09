@@ -1,0 +1,7 @@
+# Временные файлы сборки .exe
+build/
+dist/
+*.spec
+# Кэш Python
+__pycache__/
+*.pyc
