@@ -4,13 +4,24 @@ import sqlite3
 class Account:
     def __init__(self, owner, balance=0):
         self.owner = owner
-        self.balance = balance
+        self._balance = balance
         self.history = []
+
+    def __eq__(self, other):
+        if not isinstance(other, Account):
+            return False
+        return self.balance == other.balance and self.owner == other.owner
+            
+        pass
+
+    @property
+    def balance(self):
+        return self._balance
 
     def deposit(self, amount):
         if amount <= 0:
             raise ValueError('Число должно быть больше нуля!')
-        self.balance += amount
+        self._balance += amount
         self.history.append(f'Пополнение счета "{self.owner}" +{amount} ₽.')
 
     def withdraw(self, amount):
@@ -18,13 +29,33 @@ class Account:
             raise ValueError('Нужно вводить сумму больше нуля!')
         if amount > self.balance:
             raise ValueError('Недостаточно средств на балансе!')
-        self.balance -= amount
+        self._balance -= amount
         self.history.append(f'Снятие со счета "{self.owner}" на сумму: {amount} ₽.')
         print(f'  {self.owner}: {self.balance}₽ ({len(self.history)} операций)')
 
     def __str__(self):
         return f'{self.owner}: {self.balance}₽'
 
+    def __repr__(self):
+        return f'Account(owner = "{self.owner}", balance = {self.balance})'
+
+class CreditAccount(Account):
+    def __init__(self, owner, balance=0,credit_limit = 50000):
+        super().__init__(owner, balance)
+        self.credit_limit = credit_limit
+
+    def withdraw(self,amount):
+        if amount <=0:
+            raise ValueError('Нельзя снять отрицательную сумму!')
+            return
+        max_sum = self.balance + self.credit_limit
+        if amount > max_sum:
+            raise ValueError('Сумма для снятия превышает лимит!')
+            return
+        self._balance -= amount
+
+    def __repr__(self):
+        return f'CreditAccount (owner = "{self.owner}", balance = {self.balance})'
 
 class Bank:
     """
