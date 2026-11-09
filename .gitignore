@@ -5,3 +5,4 @@ dist/
 # Кэш Python
 __pycache__/
 *.pyc
+*.db
