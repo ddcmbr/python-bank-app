@@ -12,7 +12,16 @@ class Account:
             return False
         return self.balance == other.balance and self.owner == other.owner
             
-        pass
+
+    def __add__(self, other):
+        if isinstance(other, Account):
+            return self.balance + other.balance
+        elif isinstance(other, bool):
+            raise TypeError(f'Нельзя вводить значения True/False')
+        elif isinstance(other, (int, float)):
+            return self.balance + other
+        else:
+            raise TypeError(f'Нельзя сложить Account и {type(other).__name__}')
 
     @property
     def balance(self):
@@ -47,11 +56,11 @@ class CreditAccount(Account):
     def withdraw(self,amount):
         if amount <=0:
             raise ValueError('Нельзя снять отрицательную сумму!')
-            return
+
         max_sum = self.balance + self.credit_limit
         if amount > max_sum:
             raise ValueError('Сумма для снятия превышает лимит!')
-            return
+
         self._balance -= amount
 
     def __repr__(self):
